@@ -1,2 +1,2 @@
-# coefficientofattenuation
+# Coefficient of attenuation
 Estimating coefficient of attenuation in South Adriatic Sea from in situ light intensity (retreaved from data loggers).
