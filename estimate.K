@@ -17,20 +17,18 @@ library(patchwork)
 library(dplyr)
 
 #3. import data
-
-#PAR data
-par10 <- readr::read_delim("par10.csv", show_col_types = FALSE) #PAR measured at 10 meters
-par30 <- readr::read_delim("par30.csv") #PAR measured at 30 meters
-
-#Light intensity
-l0 <- readr::read_delim("light0.csv", delim =",", show_col_types = FALSE) #light intensity at surface
-l5 <- readr::read_delim("light5.csv", delim =",", show_col_types = FALSE) #light intensity at 5 meters
-l10 <- readr::read_delim("light10.csv", delim =",", show_col_types = FALSE) #l. int. at 10 m
-l20 <- readr::read_delim("light20.csv", delim =",", show_col_types = FALSE) #l. int. at 20 m
-l30 <- readr::read_delim("light30.csv", delim =",", show_col_types = FALSE) #l. int. at 30 m
+#light intensity at the surface
+l0 <- readr::read_delim("light0.csv", delim =",", show_col_types = FALSE) 
+#light intensity at 5 meters
+l5 <- readr::read_delim("light5.csv", delim =",", show_col_types = FALSE) 
+#l. int. at 10 m
+l10 <- readr::read_delim("light10.csv", delim =",", show_col_types = FALSE)
+#l. int. at 20 m
+l20 <- readr::read_delim("light20.csv", delim =",", show_col_types = FALSE)
+#l. int. at 30 m
+l30 <- readr::read_delim("light30.csv", delim =",", show_col_types = FALSE)
 
 #4. organize data 
-
 #a filter the data using time filter for all zeros (exclude the night)
 l0 <- l0 %>% filter(`Light intensity(Lux)`> 0)
 l5 <- l5 %>% filter(`Light intensity(Lux)`> 0)
@@ -191,6 +189,3 @@ for (i in 1:length(K)) #loop through each day's K estimate and plot the light de
   }
 lines(I., depth, type="b", col="red", lwd=2) #plot the measured light intensity data
 legend("topright", legend=paste("Day", 1:length(K)), col=color_palette)
-
-#normalizing to 1
-
