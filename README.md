@@ -15,6 +15,6 @@ The same process as described above was implemented. It was repeated for data fi
 Distribution of K estimates is looked at for each time, and the mean and median was calculated. 
 Light profile is modeled using single K values for each time (morning, solar noon, and afternoon), and plotted versus in situ measured light profile (median of light intensity data for all days at each time period was taken as representative)
 
-#This is a process of inspecting K values at South Adriatic Sea using in situ light intensity measurements, and to choose single value that will be most representative for usage in further models (specifically primary productivity models)
+-This is a process of inspecting K values at South Adriatic Sea using in situ light intensity measurements, and to choose single value that will be most representative for usage in further models (specifically primary productivity models)
 
 
