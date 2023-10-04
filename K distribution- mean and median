@@ -1,0 +1,62 @@
+#This script presents the code for estimating mean and median of K estimated for each day, and using the single values to model light profile 
+#and plot it versus in situ measured light profile
+
+#MEAN AND MEDIAN OF K DATASET AND PLOTTING AGAINST THE MEASURED PROFILE 
+#MEAN
+K.mean <- mean(K.)
+K_am_mean <- mean(K_am)
+K_pm_mean  <- mean (K_pm)
+
+#create grid of three plots
+dev.off()
+par(mfrow=c(1, 3))
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity",
+     ylab="Depth",  main= "Coefficient of attenuation mean of all days (6th-21st July 2023)", sub="10:00AM", 
+     cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) #define margins of the plot
+  Iest <- e^(K_am_mean*depth) #calculate light decay for each day using the estimated K.(i)
+  lines(Iest, depth, type="b", col="blue", lwd=1)  #plot light decay for each day using the estimated K (i)
+lines(I_am, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+text(0.5, max(depth), "K=0.4216495", cex=2, col="blue") 
+
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub="01:00PM, solar noon",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+  Iest <- e^(K.mean*depth) 
+  lines(Iest, depth, type="b", col="blue", lwd=1)  
+lines(nI, depth, type="b", col="red", lwd=2) 
+text(0.5, max(depth), "K=0.3922494", cex=2, col="blue") 
+
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub= "04:30PM",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+  Iest <- e^(K_pm_mean*depth)
+  lines(Iest, depth, type="b", col="blue", lwd=1)  
+lines(I_pm, depth, type="b", col="red", lwd=2) 
+text(0.5, max(depth), "K=0.7065723", cex=2, col="blue") 
+
+#MEDIAN
+K.median <- median(K.)
+K_am_median <- median(K_am)
+K_pm_median <- median (K_pm)
+
+dev.off()
+par(mfrow=c(1, 3))
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity",
+     ylab="Depth",  main= "Coefficient of attenuation median of all days (6th-21st July 2023)", sub="10:00AM", 
+     cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) #define margins of the plot
+Iest <- e^(K_am_median*depth) #calculate light decay for each day using the estimated K.(i)
+lines(Iest, depth, type="b", col="blue", lwd=1)  #plot light decay for each day using the estimated K (i)
+lines(I_am, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+text(0.5, max(depth), "K=0.3884989", cex=2, col="blue") 
+
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub="01:00PM, solar noon",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+Iest <- e^(K.median*depth) 
+lines(Iest, depth, type="b", col="blue", lwd=1)  
+lines(nI, depth, type="b", col="red", lwd=2) 
+text(0.5, max(depth), "K=0.3765038", cex=2, col="blue")
+
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub= "04:30PM",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+Iest <- e^(K_pm_median*depth)
+lines(Iest, depth, type="b", col="blue", lwd=1)  
+lines(I_pm, depth, type="b", col="red", lwd=2) 
+text(0.5, max(depth), "K=0.7486437", cex=2, col="blue") 
