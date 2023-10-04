@@ -1,0 +1,296 @@
+#This script presents the code for estimating K using in situ light intensity data normalized to 1 for following times- morning, solar noon, and afternoon
+#and for plotting modeled light profiles using K estimates 
+
+#SOLAR NOON 01:00PM (CEST)
+#1. Normalizing dataset to 1
+v0. <- v0/v0 #vectors for the dataset normalized to 1
+v5. <- v5/v0
+v10. <- v10/v0
+v20. <- v20/v0
+v30. <- v30/v0
+l. <- bind_rows( #binding data
+  mutate(v0., Depth = 0, Date = nl0$`Date Time(GMT+02:00)`),
+  mutate(v5., Depth = 5, Date = nl5$`Date Time(GMT+02:00)`),
+  mutate(v10., Depth = 10, Date = nl10$`Date Time(GMT+02:00)`),
+  mutate(v20., Depth = 20, Date = nl20$`Date Time(GMT+02:00)`),
+  mutate(v30., Depth = 30, Date = nl30$`Date Time(GMT+02:00)`)) 
+l. <- as.data.frame(l.)
+#plot
+dev.off()
+plot(l.$`Light intensity(Lux)`, -l.$Depth)
+
+#2. Estimating K for each day at solar noon 
+fit_summary. <- list() #store summary for fit of each iteration
+n. <-unique(l.$Date) #retreave unique dates from the list of dates
+N. <- as.numeric(length(n.))
+K. <- numeric (length(N.))
+#loop for each day
+set.seed(1)
+for (i in 1:N.){ 
+  day_data. <- l.[l.$Date == n.[i],] #subset the data for the specific day
+  I. <- day_data.$`Light intensity(Lux)`#extract relevant values for the specific day
+  z. <- day_data.$Depth
+  fit <- (nls(I. ~ e^(-K.*z.), start= list(K.=0.1))) #fit data for each specified day (i) to the model using nonlinear squares
+  K.[i] <- (coef(fit))["K."] #store the estimated K(i)
+  fit_summary.[[i]] <- summary(fit) #store the summary of nls fit for every iteration in the list
+}
+#print results
+K.
+fit_summary.
+
+#3. Plotting 
+#median of measured in situ data normalized to 1
+depth <- c(-0,-5,-10,-20,-30)
+x1 <- median(nl0$`Light intensity(Lux)`)
+x2 <- median(nl5$`Light intensity(Lux)`)
+x3 <- median(nl10$`Light intensity(Lux)`)
+x4 <- median(nl20$`Light intensity(Lux)`)
+x5 <- median(nl30$`Light intensity(Lux)`)
+x1. <- x1/x1 #normalizing
+x2. <- x2/x1
+x3. <- x3/x1
+x4. <- x4/x1
+x5. <- x5/x1
+nI <- c(x1., x2., x3., x4., x5.) #intensity at each depth at noon
+
+#plotting light profiles modeled using K estimates versus median of measured data
+color_palette <- colorRampPalette(c("green","blue"))(length(K.))
+dev.off()
+par(mfrow=c(1,1)) #adjust the plot layout
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", ylab="Depth") #define margins of the plot
+legend("topright", legend=paste("Day", 1:length(K.)), col=color_palette, lwd=1)
+for (i in 1:length(K.)) #loop through each day's K estimate and plot the light decay with depth 
+{
+  Iest <- e^(K.[i]*depth) #calculate light decay for each day using the estimated K.(i)
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  #plot light decay for each day using the estimated K (i)
+  }
+lines(nI, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+
+#MORNING 10:00AM (CEST)
+#1 organize data
+#filter the timeseries for values at 10AM (16 points per depth)
+AMl0 <- l0[grep("10:00:00 AM", l0$`Date Time(GMT+02:00)`),] 
+AMl5 <- l5[grep("10:00:00 AM", l5$`Date Time(GMT+02:00)`),]
+AMl10 <- l10[grep("10:00:00 AM", l10$`Date Time(GMT+02:00)`),]
+AMl20 <- l20[grep("10:00:00 AM", l20$`Date Time(GMT+02:00)`),]
+AMl30 <- l30[grep("10:00:00 AM", l30$`Date Time(GMT+02:00)`),]
+#plot raw data
+dev.off()
+par(mfrow=c(5,1)) 
+plot(AMl0$No, AMl0$`Light intensity(Lux)`)
+plot(AMl5$No, AMl5$`Light intensity(Lux)`)
+plot(AMl10$No, AMl10$`Light intensity(Lux)`)
+plot(AMl20$No, AMl20$`Light intensity(Lux)`)
+plot(AMl30$No, AMl30$`Light intensity(Lux)`)
+#create a list
+AMv0 <- AMl0[4] #vectors for the data set
+AMv5 <- AMl5[4]
+AMv10 <- AMl10[4]
+AMv20 <- AMl20[4]
+AMv30 <- AMl30[4]
+#binding data
+AMl <- bind_rows( 
+  mutate(AMv0, Depth = 0, Date = AMl0$`Date Time(GMT+02:00)`),
+  mutate(AMv5, Depth = 5, Date = AMl5$`Date Time(GMT+02:00)`),
+  mutate(AMv10, Depth = 10, Date = AMl10$`Date Time(GMT+02:00)`),
+  mutate(AMv20, Depth = 20, Date = AMl20$`Date Time(GMT+02:00)`),
+  mutate(AMv30, Depth = 30, Date = AMl30$`Date Time(GMT+02:00)`)) 
+AMl <- as.data.frame(AMl)
+#plot
+dev.off()
+plot(AMl$`Light intensity(Lux)`, -AMl$Depth)
+
+#2 normalize data
+#normalizing dataset to 1 
+AMv0. <- AMv0/AMv0 #vectors for the data set normalized to 1
+AMv5. <- AMv5/AMv0
+AMv10. <- AMv10/AMv0
+AMv20. <- AMv20/AMv0
+AMv30. <- AMv30/AMv0
+#binding data
+AMl. <- bind_rows( 
+  mutate(AMv0., Depth = 0, Date = AMl0$`Date Time(GMT+02:00)`),
+  mutate(AMv5., Depth = 5, Date = AMl5$`Date Time(GMT+02:00)`),
+  mutate(AMv10., Depth = 10, Date = AMl10$`Date Time(GMT+02:00)`),
+  mutate(AMv20., Depth = 20, Date = AMl20$`Date Time(GMT+02:00)`),
+  mutate(AMv30., Depth = 30, Date = AMl30$`Date Time(GMT+02:00)`)) 
+AMl. <- as.data.frame(AMl.)
+#plot
+dev.off()
+plot(AMl.$`Light intensity(Lux)`, -AMl.$Depth)
+
+#3 Estimating K for each day
+fit_summary_am <- list() #store summary for fit of each iteration
+n_am <-unique(AMl.$Date) #retreave unique dates from the list of dates
+N_am <- as.numeric(length(n_am))
+K_am <- numeric (length(N_am))
+#loop for each day
+set.seed(1)
+for (i in 1:N_am){ 
+  day_data_am <- AMl.[AMl.$Date == n_am[i],] #subset the data for the specific day
+  I_am <- day_data_am$`Light intensity(Lux)`#extract relevant values for the specific day
+  z_am <- day_data_am$Depth
+  fit <- (nls(I_am ~ e^(-K_am*z.), start= list(K_am=0.1))) #fit data for each specified day (i) to the model using nonlinear squares
+  K_am[i] <- (coef(fit))["K_am"] #store the estimated K(i)
+  fit_summary_am[[i]] <- summary(fit) #store the summary of nls fit for every iteration in the list
+}
+#print results
+K_am
+fit_summary_am
+
+#4 Plot the data
+#median of measured in situ data normalized to 1
+depth <- c(-0,-5,-10,-20,-30)
+x1 <- median(AMl0$`Light intensity(Lux)`)
+x2 <- median(AMl5$`Light intensity(Lux)`)
+x3 <- median(AMl10$`Light intensity(Lux)`)
+x4 <- median(AMl20$`Light intensity(Lux)`)
+x5 <- median(AMl30$`Light intensity(Lux)`)
+x1. <- x1/x1 #normalizing
+x2. <- x2/x1
+x3. <- x3/x1
+x4. <- x4/x1
+x5. <- x5/x1
+I_am <- c(x1., x2., x3., x4., x5.) #intensity at each depth at noon
+
+#plotting light profiles modeled using K estimates versus median of measured data
+color_palette <- colorRampPalette(c("green","blue"))(length(K.))
+dev.off()
+par(mfrow=c(1,1)) #adjust the plot layout
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", ylab="Depth") #define margins of the plot
+legend("topright", legend=paste("Day", 1:length(K.)), col=color_palette, lwd=1)
+for (i in 1:length(K_am)) #loop through each day's K estimate and plot the light decay with depth 
+{
+  Iest <- e^(K_am[i]*depth) #calculate light decay for each day using the estimated K.(i)
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  #plot light decay for each day using the estimated K (i)
+}
+lines(I_am, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+
+#AFTERNOON 04:30PM (CEST)
+#1 organize data
+#filter the timeseries for values at 04:30PM (16 points per depth)
+PMl0 <- l0[grep("04:30:00 PM", l0$`Date Time(GMT+02:00)`),] 
+PMl5 <- l5[grep("04:30:00 PM", l5$`Date Time(GMT+02:00)`),]
+PMl10 <- l10[grep("04:30:00 PM", l10$`Date Time(GMT+02:00)`),]
+PMl20 <- l20[grep("04:30:00 PM", l20$`Date Time(GMT+02:00)`),]
+PMl30 <- l30[grep("04:30:00 PM", l30$`Date Time(GMT+02:00)`),]
+#plot raw data
+dev.off()
+par(mfrow=c(5,1)) 
+plot(PMl0$No, PMl0$`Light intensity(Lux)`)
+plot(PMl5$No, PMl5$`Light intensity(Lux)`)
+plot(PMl10$No, PMl10$`Light intensity(Lux)`)
+plot(PMl20$No, PMl20$`Light intensity(Lux)`)
+plot(PMl30$No, PMl30$`Light intensity(Lux)`)
+#create a list
+PMv0 <- PMl0[4] #vectors for the data set
+PMv5 <- PMl5[4]
+PMv10 <- PMl10[4]
+PMv20 <- PMl20[4]
+PMv30 <- PMl30[4]
+#binding data
+PMl <- bind_rows( 
+  mutate(PMv0, Depth = 0, Date = PMl0$`Date Time(GMT+02:00)`),
+  mutate(PMv5, Depth = 5, Date = PMl5$`Date Time(GMT+02:00)`),
+  mutate(PMv10, Depth = 10, Date = PMl10$`Date Time(GMT+02:00)`),
+  mutate(PMv20, Depth = 20, Date = PMl20$`Date Time(GMT+02:00)`),
+  mutate(PMv30, Depth = 30, Date = PMl30$`Date Time(GMT+02:00)`)) 
+PMl <- as.data.frame(PMl)
+#plot
+dev.off()
+plot(AMl$`Light intensity(Lux)`, -AMl$Depth)
+
+#2 normalize data
+#normalizing dataset to 1 
+PMv0. <- PMv0/PMv0 #vectors for the data set normalized to 1
+PMv5. <- PMv5/PMv0
+PMv10. <- PMv10/PMv0
+PMv20. <- PMv20/PMv0
+PMv30. <- PMv30/PMv0
+#binding data
+PMl. <- bind_rows( 
+  mutate(PMv0., Depth = 0, Date = PMl0$`Date Time(GMT+02:00)`),
+  mutate(PMv5., Depth = 5, Date = PMl5$`Date Time(GMT+02:00)`),
+  mutate(PMv10., Depth = 10, Date = PMl10$`Date Time(GMT+02:00)`),
+  mutate(PMv20., Depth = 20, Date = PMl20$`Date Time(GMT+02:00)`),
+  mutate(PMv30., Depth = 30, Date = PMl30$`Date Time(GMT+02:00)`)) 
+PMl. <- as.data.frame(PMl.)
+#plot
+dev.off()
+plot(PMl.$`Light intensity(Lux)`, -PMl.$Depth)
+
+#3 Estimating K for each day
+fit_summary_pm <- list() #store summary for fit of each iteration
+n_pm <-unique(PMl.$Date) #retreave unique dates from the list of dates
+N_pm <- as.numeric(length(n_pm))
+K_pm <- numeric (length(N_pm))
+#loop for each day
+set.seed(1)
+for (i in 1:N_pm){ 
+  day_data_pm <- PMl.[PMl.$Date == n_pm[i],] #subset the data for the specific day
+  I_pm <- day_data_pm$`Light intensity(Lux)`#extract relevant values for the specific day
+  z_pm <- day_data_pm$Depth
+  fit <- (nls(I_pm ~ e^(-K_pm*z.), start= list(K_pm=0.1))) #fit data for each specified day (i) to the model using nonlinear squares
+  K_pm[i] <- (coef(fit))["K_pm"] #store the estimated K(i)
+  fit_summary_am[[i]] <- summary(fit) #store the summary of nls fit for every iteration in the list
+}
+#print results
+K_pm
+fit_summary_pm
+
+#4 Plot the data
+#median of measured in situ data normalized to 1
+depth <- c(-0,-5,-10,-20,-30)
+x1 <- median(PMl0$`Light intensity(Lux)`)
+x2 <- median(PMl5$`Light intensity(Lux)`)
+x3 <- median(PMl10$`Light intensity(Lux)`)
+x4 <- median(PMl20$`Light intensity(Lux)`)
+x5 <- median(PMl30$`Light intensity(Lux)`)
+x1. <- x1/x1 #normalizing
+x2. <- x2/x1
+x3. <- x3/x1
+x4. <- x4/x1
+x5. <- x5/x1
+I_pm <- c(x1., x2., x3., x4., x5.) #intensity at each depth at noon
+
+#plotting light profiles modeled using K estimates versus median of measured data
+color_palette <- colorRampPalette(c("green","blue"))(length(K.))
+dev.off()
+par(mfrow=c(1,1)) #adjust the plot layout
+plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", ylab="Depth") #define margins of the plot
+for (i in 1:length(K_pm)) #loop through each day's K estimate and plot the light decay with depth 
+{
+  Iest <- e^(K_pm[i]*depth) #calculate light decay for each day using the estimated K.(i)
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  #plot light decay for each day using the estimated K (i)
+}
+lines(I_pm, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+
+#CREATE A GRID OF THREE PLOTS - MORNING, SOLAR NOON, AFTERNOON 
+dev.off()
+par(mfrow=c(1, 3))
+ plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity",
+     ylab="Depth",  main= "Coefficient of attenuation for each day (6th-21st July 2023)", sub="10:00AM", 
+     cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) #define margins of the plot
+for (i in 1:length(K_am)) #loop through each day's K estimate and plot the light decay with depth 
+{
+  Iest <- e^(K_am[i]*depth) #calculate light decay for each day using the estimated K.(i)
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  #plot light decay for each day using the estimated K (i)
+}
+lines(I_am, depth, type="b", col="red", lwd=2) #plot the measured light intensity data
+ plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub="01:00PM, solar noon",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+for (i in 1:length(K.)) 
+{
+  Iest <- e^(K.[i]*depth) 
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  
+}
+lines(nI, depth, type="b", col="red", lwd=2) 
+ plot(1, type="n", xlim=c(0, 1), ylim=range(depth), xlab="Light Intensity", 
+     ylab="Depth", sub= "04:30PM",  cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5) 
+legend("topright", legend=paste("Day", 1:length(K.)), col=color_palette, lwd=1)
+for (i in 1:length(K_pm)) 
+{
+  Iest <- e^(K_pm[i]*depth)
+  lines(Iest, depth, type="b", col=color_palette[i], lwd=1)  
+}
+lines(I_pm, depth, type="b", col="red", lwd=2) 
