@@ -1,5 +1,5 @@
 # Coefficient of light attenuation (K)
-This repository containts scripts for estimating coefficient of light attenuation (K) by fitting in situ measured light intensity data for daily light function (I=I0*e^(-K *z)) using nonlinear least squares method (determine the nonlinear (weighted) least-squares estimates of the parameters of a nonlinear model).
+This repository containts scripts for estimating coefficient of light attenuation (K) by fitting in situ measured light intensity data to daily light function (I=I0*e^(-K *z)) using nonlinear least squares method (determine the nonlinear (weighted) least-squares estimates of the parameters of a nonlinear model).
 
 In situ light intensity data is retreaved from data loggers that were mounted at the cliffs of Lastovo Island in South Adriatic Sea. They were deployed at surface (0 m), 5 m, 10 m, 20 m and 30 m. and measuring in the period from 6th to 21st July. 
 
