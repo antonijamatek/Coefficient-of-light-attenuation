@@ -16,3 +16,6 @@ The same process as described above was implemented. It was repeated for data fi
 # Script K distribution - mean and median
 Distribution of K estimates is looked at for each time, and the mean and median was calculated. 
 Light profile is modeled using single K values for each time (morning, solar noon, and afternoon), and plotted versus in situ measured light profile (median of light intensity data for all days at each time period was taken as representative)
+
+# Script storing K fit statistics summary
+Stroing the model fit statistics to the table - standard error, t value, p value, residual standard error in order to examine if the model was a good fit to the data, and to test statistical significance of K estimates. 
