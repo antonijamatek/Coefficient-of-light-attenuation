@@ -19,3 +19,6 @@ Light profile is modeled using single K values for each time (morning, solar noo
 
 # Script storing K fit statistics summary
 Storing the model fit statistics to the table - standard error, t value, p value, residual standard error in order to examine if the model was a good fit to the data, and to test statistical significance of K estimates. 
+
+# Script storing K estimate_correction.R
+Workflow without normalizing dataset, and using solar noon dataset only. 
