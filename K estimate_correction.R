@@ -6,6 +6,7 @@ install.packages("tibble")
 install.packages("readr")
 install.packages("dichromat")
 install.packages("dplyr")
+install.packages("SciViews")
 
 #2. load packages
 library(tidyverse)
@@ -14,6 +15,7 @@ library(readr)
 library(dichromat)
 library(patchwork)
 library(dplyr)
+library(SciViews)
 
 #3. import data
 #Light intensity
@@ -91,7 +93,7 @@ n <-unique(l$Date)
 N <- as.numeric(length(n))
 K <- numeric(length(N))
 
-#6 Estimating K using nls (nonlinear squares) function for each day
+#6 Estimating K using nls (nonlinear squares) analysis for each day
 set.seed(1)
 #loop through each day 
 for (i in 1:N){ 
@@ -187,3 +189,249 @@ for (i in 1:length(n1))
 { subset_data1 <- l1[l1$Date == n1[i],] #subset the data for the current date
 lines(subset_data1$`Light intensity(Lux)`, depth1, lty=2, lwd=2, col=color_palette[i])  #plot the measured light intensity data for the current date
 }
+
+#STORING MODEL STATISTICS
+#initialize empty vectors to store the values
+K_estimate <- numeric()
+std_error <- numeric()
+t_value <- numeric()
+p_value <- numeric()
+residual_std_errors <- numeric()
+#iterate over fit_summary and extract the values
+for (i in 1:length(fit_summary)) {
+  summary <- fit_summary[[i]]
+  K_estimate <- c(K_estimate, summary$parameters["K", "Estimate"])
+  std_error <- c(std_error, summary$parameters["K", "Std. Error"])
+  t_value <- c(t_value, summary$parameters["K", "t value"])
+  p_value <- c(p_value, summary$parameters["K", "Pr(>|t|)"])
+  residual_std_errors[i] <- fit_summary[[i]]$sigma
+}
+#create a data frame
+fit_summary_df <- data.frame(
+  Day = n,
+  K_Estimate = K_estimate,
+  Std_Error = std_error,
+  t_value = t_value,
+  p_value = p_value,
+  Residual_Std_Error = residual_std_errors)
+#save the data frame in table 
+writexl::write_xlsx(fit_summary_df, "fit_summary-solar noon.xlsx")
+
+#initialize empty vectors to store the values
+K_estimate <- numeric()
+std_error <- numeric()
+t_value <- numeric()
+p_value <- numeric()
+residual_std_errors <- numeric()
+#iterate over fit_summary and extract the values
+for (i in 1:length(fit_summary1)) {
+  summary <- fit_summary1[[i]]
+  K_estimate <- c(K_estimate, summary$parameters["K1", "Estimate"])
+  std_error <- c(std_error, summary$parameters["K1", "Std. Error"])
+  t_value <- c(t_value, summary$parameters["K1", "t value"])
+  p_value <- c(p_value, summary$parameters["K1", "Pr(>|t|)"])
+  residual_std_errors[i] <- fit_summary.1[[i]]$sigma
+}
+#create a data frame
+fit_summary1_df <- data.frame(
+  Day = n,
+  K_Estimate = K_estimate,
+  Std_Error = std_error,
+  t_value = t_value,
+  p_value = p_value,
+  Residual_Std_Error = residual_std_errors)
+#save the data frame in table 
+writexl::write_xlsx(fit_summary1_df, "fit_summary1-solar noon.xlsx")
+
+n
+#ESTIMATE WITHOUT NLS
+l2<- l %>% filter(Date == "07/06/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/07/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/08/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/09/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/10/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+
+Kd
+
+l2<- l %>% filter(Date == "07/11/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/12/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/13/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/14/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/15/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/16/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/17/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/18/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2 <- l %>% filter(Date == "07/19/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/20/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+l2<- l %>% filter(Date == "07/21/23 01:00:00 PM")
+I <- l2 %>% filter(Depth == as.numeric(10))
+I <- I$`Light intensity(Lux)`
+I0 <- l2 %>% filter(Depth == as.numeric(5))
+I0 <- I0$`Light intensity(Lux)` 
+z <- l2 %>% filter(Depth == as.numeric(5))
+z <- z$Depth
+Kd <- ln(I/I0) * -(1/z) #fit data
+
+Kd
+
+#07/06/23 01:00:00 PM - Kd = 0.17
+#07/07/23 01:00:00 PM - Kd = 0.14
+#07/08/23 01:00:00 PM - Kd = 0.25
+#07/09/23 01:00:00 PM - Kd = -0.02
+#07/10/23 01:00:00 PM - Kd = -0.02
+#07/11/23 01:00:00 PM - Kd = 0.06
+#07/12/23 01:00:00 PM - Kd = 0.08
+#07/13/23 01:00:00 PM - Kd = 0.09
+#07/14/23 01:00:00 PM - Kd = 0.05
+#07/15/23 01:00:00 PM - Kd = 0.02
+#07/16/23 01:00:00 PM - Kd = 0.08
+#07/17/23 01:00:00 PM - Kd = 0.03
+#07/18/23 01:00:00 PM - Kd = 0
+#07/20/23 01:00:00 PM - Kd = 0.14
+#07/21/23 01:00:00 PM - Kd = 0.05
