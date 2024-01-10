@@ -1,0 +1,28 @@
+#1.install packages
+install.packages("tidyverse")
+install.packages("tibble")
+install.packages("readr")
+install.packages("dichromat")
+install.packages("dplyr")
+install.packages("SciViews")
+
+#2.load packages
+library(tidyverse)
+library(tibble)
+library(readr)
+library(dichromat)
+library(patchwork)
+library(dplyr)
+library(SciViews)
+
+#3.import data
+#on cliffs
+#23.7 - 5.10.2022.
+par10.raw <- read_lines(par_10m.raw)
+par10 <- 
+#21.7 - 5.10.2022.
+par40 <- 
+#ondeck PAR, 15. - 22. 7. 2022. 
+par0 <-
+  
+getwd()
